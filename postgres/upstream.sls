@@ -38,6 +38,7 @@ postgresql-repo-keyring:
 postgresql-repo:
   pkgrepo.managed:
     {{- format_kwargs(postgres.pkg_repo) }}
+    - clean_file: True
     - require:
       - pkg: postgresql-pkg-deps
 
