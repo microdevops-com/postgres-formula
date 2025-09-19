@@ -12,11 +12,11 @@ postgresql-repo-removed:
     - keyid: {{ postgres.pkg_repo_keyid }}
     {%- endif %}
 
-    {% if grains.os_family == 'Debian' %}
+    {#% if grains.os_family == 'Debian' %}
 postgresql-repo-keyring-removed:
   pkg.removed:
     - name: pgdg-keyring
-    {%- endif -%}
+    {%- endif -%#}
 
 #remove release installed by formula
 postgresql-server-removed:
