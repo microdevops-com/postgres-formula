@@ -24,16 +24,22 @@ postgresql-pkg-deps:
     - pkgs: {{ postgres.pkgs_deps | json }}
 
 # Add upstream repository for your distro
-  {#% if grains.os_family == 'Debian' %}
-  {% if salt['pkg.version_cmp'](pg_common_version, '246') <= 0 %}
+  {%- if grains.os_family == 'Debian' %}
+postgresql-repo-keyring-dir:
+  file.directory:
+    - name: /usr/share/postgresql-common/pgdg
+    - makedirs: True
+    - require_in:
+      - file: postgresql-repo-keyring
+
 postgresql-repo-keyring:
-  pkg.installed:
-    - sources:
-      - pgdg-keyring: {{ postgres.pkg_repo_keyring }}
+  file.managed:
+    - name: /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+    - source: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    - skip_verify: True
     - require_in:
       - pkgrepo: postgresql-repo
   {%- endif %}
-  {%- endif %#}
 
 postgresql-repo:
   pkgrepo.managed:
