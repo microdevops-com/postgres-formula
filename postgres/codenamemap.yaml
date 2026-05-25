@@ -11,7 +11,7 @@
     codename: optional grain value if `name` does not match the one returned by `oscodename` grain
   #}
 
-{% macro debian_codename(name, version, codename=none) %}
+{% macro debian_codename(name, version, codename=none, archive=false) %}
 
   {% if repo.use_upstream_repo == true %}
     {% set version = repo.version %}
@@ -22,6 +22,7 @@
   {% set cluster_name = repo.cluster_name %}
   {% set conf_dir = '/etc/postgresql/{0}/{1}'.format(version, cluster_name) %}
   {% set data_dir = '/var/lib/postgresql/{0}/{1}'.format(version, cluster_name) %}
+  {% set repo_host = 'apt-archive.postgresql.org' if archive else 'apt.postgresql.org' %}
 
 {{ codename|default(name, true) }}:
   # PostgreSQL packages are mostly downloaded from `main` repo component
@@ -29,7 +30,7 @@
   data_dir: {{ data_dir }}
   fromrepo: {{ fromrepo }}
   pkg_repo:
-    name: 'deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt {{ name }}-pgdg main'
+    name: 'deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://{{ repo_host }}/pub/repos/apt {{ name }}-pgdg main'
   pkg: postgresql-{{ version }}
   pkg_client: postgresql-client-{{ version }}
   prepare_cluster:
@@ -77,7 +78,9 @@
 {{ debian_codename('xenial', '9.5') }}
 {{ debian_codename('bionic', '10') }}
 {{ debian_codename('eoan', '11') }}
-{{ debian_codename('focal', '12') }}
+# focal (20.04) EOL'd on 2025-04-30; packages removed from apt.postgresql.org
+# on 2025-07-31 and moved to apt-archive.postgresql.org
+{{ debian_codename('focal', '12', archive=True) }}
 {{ debian_codename('jammy', '14') }}
 
 ## Fedora
