@@ -82,6 +82,7 @@
 # on 2025-07-31 and moved to apt-archive.postgresql.org
 {{ debian_codename('focal', '12', archive=True) }}
 {{ debian_codename('jammy', '14') }}
+{{ debian_codename('noble', '16') }}
 
 ## Fedora
 # https://download.postgresql.org/pub/repos/yum/13/fedora/
